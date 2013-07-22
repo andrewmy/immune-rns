@@ -4,8 +4,8 @@ class Vector {
     public
 		$point1,
 		$point2,
-		$basis=array(),
-		$norm=0;
+		$basis = array(),
+		$norm = 0;
 
 
 	/**
@@ -17,17 +17,17 @@ class Vector {
 	{
 		$this->point1 = $p1;
 		$this->point2 = $p2;
-		$this->_recalc();
+		$this->recalc();
 	}
 
 
 	function __toString()
 	{
-		return "($this->point1, $this->point2)";
+		return "({$this->point1->formatted()}, {$this->point2->formatted()})";
 	}
 
 
-	private function _recalc()
+	private function recalc()
 	{
 		for($i=0; $i < DIMENSIONS; $i++)
 			$this->basis[$i] = $this->point2->coords[$i] - $this->point1->coords[$i];
@@ -41,7 +41,7 @@ class Vector {
 		for($i=0; $i < $this->point2->dimensions; $i++)
 			$coords[$i] = $this->point1->coords[$i] + $this->basis[$i] * $n;
 		$this->point2 = new Point($coords);
-		$this->_recalc();
+		$this->recalc();
 		return $this;
 	}
 }

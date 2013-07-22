@@ -4,9 +4,9 @@ class Detector
 {
 	public 
 		$centre,
-		$radius=0,
-		$score=0,
-		$overlap=0;
+		$radius = 0,
+		$score = 0,
+		$overlap = 0;
 
 	public static
 		$D = array(),
@@ -19,25 +19,26 @@ class Detector
 	 * @param Point/array $centre
 	 * @param bool $autoradius
 	 */
-	function __construct($centre,$autoradius=true)
+	function __construct($centre, $autoradius=true)
 	{
 		if(!($centre instanceof Point)) {
 			if(!is_array($centre))
-				$centre=func_get_args();
-			$centre=new Point($centre);
+				$centre = func_get_args();
+			$centre = new Point($centre);
 		}
-		$this->centre=$centre;
+		$this->centre = $centre;
 		if($autoradius)
-			$this->_setAutoRadius();
+			$this->setAutoRadius();
 	}
 
 
 	function  __toString() {
-		return "(c: $this->centre, R: $this->radius, overlap: $this->overlap, score: $this->score)";
+		return "(c: {$this->centre->formatted()}, ".
+			"R: $this->radius, overlap: $this->overlap, score: $this->score)";
 	}
 
 
-	private function _setAutoRadius()
+	private function setAutoRadius()
 	{
 		$this->radius = $this->getNearestPoint()->distanceFrom($this->centre) - MAX_VARIATION;
 		return $this;
@@ -46,23 +47,22 @@ class Detector
 
 	public function moveFrom($nearest)
 	{
-		$nearest_centre=($nearest instanceof Detector)
+		$nearest_centre = ($nearest instanceof Detector)
 			? $nearest->centre
 			: $nearest; // instanceof Point
 		$v = new Vector($this->centre, $nearest_centre);
 		$v->multiply(-1);
-		//$this->centre = $this->centre->moveByVector(self::varMovement() * $v/$v->norm());
-		$this->centre = $this->centre->moveByVector($v->multiply(self::varMovement()/$v->norm));
+		$this->centre = $this->centre->moveByVector($v->multiply(self::varMovement() / $v->norm));
 	}
 	
 
 	public function makeClone()
 	{
-		$new_centre=$this->getNearestDetector()->centre;
+		$new_centre = $this->getNearestDetector()->centre;
 		$v = new Vector($this->centre, $new_centre);
 		$v->multiply(-1);
-		//$new_centre = $new_centre + $this->radius * $dir/vectorNorm($dir);
-		if($v->norm == 0) { printr($this->centre); printr($new_centre); die; }
+		if($v->norm == 0)
+			throw new Exception('Cloned detector is in the same location as parent');
 		$new_centre = $new_centre->moveByVector($v->multiply($this->radius/$v->norm));
 		$d=new Detector($new_centre);
 		$d->radius=$this->radius;
@@ -75,20 +75,20 @@ class Detector
 		$sum=0;
 		//  FIXME: detector equality
 		foreach($list as $item) {
-			$p=($item instanceof Detector)
+			$p = ($item instanceof Detector)
 				? $item->centre
 				: $item;
 			$radius=($item instanceof Detector)
 				? $item->radius
 				: MAX_VARIATION;
 			if($p != $this->centre && $this->radius != $radius) // $d->r ?
-				$sum+=$this->overlap($p,$radius);
+				$sum += $this->overlap($p, $radius);
 		}
 		return $sum;
 	}
 	
 
-	public function overlap($p,$r)
+	public function overlap($p, $r)
 	{
 		return pow(
 			exp(
@@ -114,7 +114,7 @@ class Detector
 		foreach(self::$S as $i=>$p)
 			if($this->centre->distanceFrom($p) < $lowest && $this->centre->distanceFrom($p) > 0) {
 				$lowest = $this->centre->distanceFrom($p);
-				$lowest_i=$i;
+				$lowest_i = $i;
 			}
 		return self::$S[$lowest_i];
 	}
@@ -125,7 +125,8 @@ class Detector
 		$lowest = pow(self::$max_dim, DIMENSIONS); // 0
 		$lowest_i = 0;
 		foreach(self::$D as $i=>$d)
-			if($this->centre->distanceFrom($d->centre) < $lowest && $this->centre->distanceFrom($d->centre) > 0) {
+			if($this->centre->distanceFrom($d->centre) < $lowest
+					&& $this->centre->distanceFrom($d->centre) > 0) {
 				$lowest = $this->centre->distanceFrom($d->centre);
 				$lowest_i=$i;
 			}
@@ -135,7 +136,7 @@ class Detector
 
 	public static function varMovement()
 	{
-		return mt_rand(0,5)/10;
+		return mt_rand(0,5) / 10;
 		// FIXME: exponential decay function
 	}
 	
@@ -156,22 +157,22 @@ class Detector
 					//echo "$d<br>";
 				}
 			}
-			$candidates[]=$d;
+			$candidates[] = $d;
 		}
 		foreach($candidates as $c)
-			$c->overlap=$c->allOverlaps($candidates);
+			$c->overlap = $c->allOverlaps($candidates);
 		self::$D = $candidates;
 	}
 
 
 	public static function sortByOverlap()
 	{
-		$arr=array();
+		$arr = array();
 		foreach(self::$D as $d)
-			$arr[$d->overlap]=$d;
+			$arr[$d->overlap] = $d;
 		ksort($arr);
-		self::$D=array();
+		self::$D = array();
 		foreach($arr as $d)
-			self::$D[]=$d;
+			self::$D[] = $d;
 	}
 }
