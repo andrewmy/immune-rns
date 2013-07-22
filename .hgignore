@@ -1,0 +1,14 @@
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+\~$
+
+^nbproject[\\/]
+\.DS_Store$
+Thumbs.db$
+^psd[\\/]
+\.gz$
+\.zip$
+\.psd$
