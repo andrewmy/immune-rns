@@ -123,7 +123,7 @@
 			<li>Red dot in green circle: non-harmful antigen</li>
 		</ul>
 		<? for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
-			<p><br /><?=$space[$i]['desc'].'; '.$space[$i + 1]['desc']?></p>
+			<p><br />x: <?=$space[$i]['desc']?>; y: <?=$space[$i + 1]['desc']?></p>
 			<img src="graph.php?<?=http_build_query(array('dimensions' => array($i, $i + 1)))?>" />
 		<? } ?>
 	</body>

@@ -12,9 +12,9 @@ define('NEXT_GEN_AFTER', 5);
 define('TOP_TOCLONE',    4);
 define('DETECTOR_SORT_FIELD', 'score');
 
-require_once './Point.class.php';
-require_once './Vector.class.php';
-require_once './Detector.class.php';
+require_once '../include/Point.class.php';
+require_once '../include/Vector.class.php';
+require_once '../include/Detector.class.php';
 
 if(have_xdebug()) {
 	ini_set('html_errors',1);

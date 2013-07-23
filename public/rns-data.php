@@ -1,13 +1,18 @@
 <?php
 
-require_once './config.php';
+require_once '../include/config.php';
+
+/**
+ * TODO:
+ * - profile (currently 0)
+ */
 
 // points' coords
 $space = array(
-	array('min'=>0,    'max'=>100,  'desc'=>'Train speed, km/h'),
-	array('min'=>0,    'max'=>150,  'desc'=>'Crossing car speed, km/h'),
-	array('min'=>-100, 'max'=>1000, 'desc'=>'Distance from the train to the rendezvous, m'),
-	array('min'=>-10,  'max'=>1000, 'desc'=>'Distance from the car to the rendezvous, m'),
+	array('min' => 0,    'max' => 100,  'desc' => 'Train speed, km/h'),
+	array('min' => 0,    'max' => 150,  'desc' => 'Crossing car speed, km/h'),
+	array('min' => -100, 'max' => 1000, 'desc' => 'Distance from the train to the rendezvous, m'),
+	array('min' => -10,  'max' => 1000, 'desc' => 'Distance from the car to the rendezvous, m'),
 );
 Detector::$max_dim = 10;
 
@@ -59,4 +64,4 @@ $_SESSION['rns'] = array(
 	'tests' => $tests,
 );
 
-require './rns.tpl.php';
+require '../include/rns.tpl.php';
