@@ -1,30 +1,72 @@
-<h2 id="settings">Settings</h2>
-<ul>
-	<li>Maximum self-element variation: <?=MAX_VARIATION?></li>
-	<li>Maximum detector overlap: <?=MAX_OVERLAP?></li>
-	<li>Dimensions (sensors): <?=DIMENSIONS?></li>
-	<li>Maximum detector population: <?=MAX_POPULATION?></li>
-	<? if(MAX_RADIUS > 0) { ?><li>Maximum detector radius: <?=MAX_RADIUS?></li><? } ?>
-	<li>Number of tests: <?=MAX_TESTS?></li>
-	<li>Next generation after <?=NEXT_GEN_AFTER?> tests</li>
-	<li>Number of top detectors to clone: <?=TOP_TOCLONE?></li>
-	<li>Detector sorting field: <?=DETECTOR_SORT_FIELD?></li>
-</ul>
-<table>
-	<caption>Problem space</caption>
-	<thead><tr><th>Dimension</th><th>Minimum</th><th>Maximum</th></tr></thead>
-	<tbody>
-		<? foreach($space as $n => $item) { ?>
-		<tr>
-			<td><?=($n + 1)?>. <?=$item['desc']?></td>
-			<td><?=$item['min']?></td>
-			<td><?=$item['max']?></td>
-		</tr>
-		<? } ?>
-	</tbody>
-</table>
+<form method="GET" action="rns.php">
 
-<h2>Self elements</h2>
-<ul>
-	<? foreach($self as $item) { ?><li><?=$item?></li><? } ?>
-</ul>
+	<h2 id="settings">Settings</h2>
+	<table class="no-borders">
+	<tr>
+		<td>Maximum self-element variation:</td>
+		<td><input type="text" name="settings[max_variation]" value="<?=MAX_VARIATION?>" /></td>
+	</tr>
+	<tr>
+		<td>Maximum detector overlap:</td>
+		<td><input type="text" name="settings[max_overlap]" value="<?=MAX_OVERLAP?>" /></td>
+	</tr>
+	<tr>
+		<td>Dimensions (sensors):</td>
+		<td>
+			<?=DIMENSIONS?>
+			<input type="hidden" name="settings[dimensions]" value="<?=DIMENSIONS?>" />
+		</td>
+	</tr>
+	<tr>
+		<td>Maximum detector population:</td>
+		<td><input type="text" name="settings[max_population]" value="<?=MAX_POPULATION?>" /></td>
+	</tr>
+	<tr>
+		<td>Maximum detector radius:</td>
+		<td><input type="text" name="settings[max_radius]" value="<?=MAX_RADIUS?>" /></td>
+	</tr>
+	<tr>
+		<td>Number of tests:</td>
+		<td><input type="text" name="settings[max_tests]" value="<?=MAX_TESTS?>" /></td>
+	</tr>
+	<tr>
+		<td>Next generation after</td>
+		<td><input type="text" name="settings[next_gen_after]" value="<?=NEXT_GEN_AFTER?>" /> tests</td>
+	</tr>
+	<tr>
+		<td>Number of top detectors to clone:</td>
+		<td><input type="text" name="settings[top_toclone]" value="<?=TOP_TOCLONE?>" /></td>
+	</tr>
+	<tr>
+		<td>Detector sorting field:</td>
+		<td>
+			<select name="settings[detector_sort_field]">
+				<option value="score"<?=(DETECTOR_SORT_FIELD == 'score' ? ' selected' : '')?>>Score</option>
+				<option value="overlap"<?=(DETECTOR_SORT_FIELD == 'overlap' ? ' selected' : '')?>>Overlap</option>
+			</select>
+		</td>
+	</tr>
+	</table>
+	
+	<table>
+		<caption>Problem space</caption>
+		<thead><tr><th>Dimension</th><th>Minimum</th><th>Maximum</th></tr></thead>
+		<tbody>
+			<? foreach($space as $n => $item) { ?>
+			<tr>
+				<td><?=($n + 1)?>. <?=$item['desc']?></td>
+				<td><?=$item['min']?></td>
+				<td><?=$item['max']?></td>
+			</tr>
+			<? } ?>
+		</tbody>
+	</table>
+
+	<h2>Self elements</h2>
+	<ul>
+		<? foreach($self as $item) { ?><li><?=$item?></li><? } ?>
+	</ul>
+	
+	<input type="submit" value="Launch" class="no-print" />
+
+</form>

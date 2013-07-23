@@ -13,7 +13,5 @@ require_once '../include/config.php';
 		<h1>Real-value negative selection algorithm</h1>
 		
 		<? require '../template/settings.phtml'; ?>
-		
-		<p><a href="rns.php">Launch with these settings</a></p>
 	</body>
 </html>

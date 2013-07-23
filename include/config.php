@@ -2,15 +2,28 @@
 
 error_reporting(E_ALL);
 
-define('MAX_VARIATION',  0.2);
-define('MAX_OVERLAP',    0.1);
-define('DIMENSIONS',     4);
-define('MAX_POPULATION', 20);
-define('MAX_RADIUS',     300);
-define('MAX_TESTS',      20);
-define('NEXT_GEN_AFTER', 5);
-define('TOP_TOCLONE',    4);
-define('DETECTOR_SORT_FIELD', 'score');
+$getSettings = !empty($_GET['settings']) ? $_GET['settings'] : array();
+$settings = array(
+	'max_variation'  => empty($getSettings) ? 0.2 : @$getSettings['max_variation'],
+	'max_overlap'    => empty($getSettings) ? 0.1 : @$getSettings['max_overlap'],
+	'dimensions'     => empty($getSettings) ? 4   : @$getSettings['dimensions'],
+	'max_population' => empty($getSettings) ? 20  : @$getSettings['max_population'],
+	'max_radius'     => empty($getSettings) ? 300 : @$getSettings['max_radius'],
+	'max_tests'      => empty($getSettings) ? 20  : @$getSettings['max_tests'],
+	'next_gen_after' => empty($getSettings) ? 5   : @$getSettings['next_gen_after'],
+	'top_toclone'    => empty($getSettings) ? 4   : @$getSettings['top_toclone'],
+	'detector_sort_field' => empty($getSettings) ? 'score' : @$getSettings['detector_sort_field'],
+);
+
+define('MAX_VARIATION',  $settings['max_variation']);
+define('MAX_OVERLAP',    $settings['max_overlap']);
+define('DIMENSIONS',     $settings['dimensions']);
+define('MAX_POPULATION', $settings['max_population']);
+define('MAX_RADIUS',     $settings['max_radius']);
+define('MAX_TESTS',      $settings['max_tests']);
+define('NEXT_GEN_AFTER', $settings['next_gen_after']);
+define('TOP_TOCLONE',    $settings['top_toclone']);
+define('DETECTOR_SORT_FIELD', $settings['detector_sort_field']);
 
 require_once '../include/Point.class.php';
 require_once '../include/Vector.class.php';
