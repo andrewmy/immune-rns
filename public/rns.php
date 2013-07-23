@@ -53,4 +53,4 @@ $_SESSION['rns'] = array(
 
 $runTime = microtime(true) - $startTime;
 
-require '../include/rns.tpl.php';
+require '../template/rns.phtml';
