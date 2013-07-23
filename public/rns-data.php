@@ -42,8 +42,8 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 		foreach(Detector::$D as &$c) // $candidates
 			$c->overlap = $c->allOverlaps(Detector::$D);
 		unset($c);
-		Detector::sortByOverlap();
-		for($j=0; $j < TOP_TOCLONE; $j++)
+		Detector::sortByField(DETECTOR_SORT_FIELD);
+		for($j = 0; $j < TOP_TOCLONE; $j++)
 			Detector::$D[MAX_POPULATION - 1 - $j] = Detector::$D[$j]->makeClone();
 		$generations[] = Detector::$D;
 	}

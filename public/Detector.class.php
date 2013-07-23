@@ -166,14 +166,22 @@ class Detector
 			$c->overlap = $c->allOverlaps($candidates);
 		self::$D = $candidates;
 	}
-
-
-	public static function sortByOverlap()
+	
+	
+	public static function sortByField($field = 'overlap')
 	{
 		$arr = array();
-		foreach(self::$D as $d)
-			$arr[$d->overlap] = $d;
-		ksort($arr);
+		foreach(self::$D as $n => $d) {
+			$fieldName = (string)$d->$field;
+			// prevent duplicates. if value is the same, priority to the first
+			if($field == 'score')
+				$fieldName .= '.'.$n;
+			$arr[$fieldName] = $d;
+		}
+		if($field == 'score')
+			krsort($arr, SORT_NUMERIC);
+		else
+			ksort($arr, SORT_NUMERIC);
 		self::$D = array();
 		foreach($arr as $d)
 			self::$D[] = $d;

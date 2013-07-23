@@ -40,6 +40,7 @@
 			<li>Number of tests: <?=MAX_TESTS?></li>
 			<li>Next generation after <?=NEXT_GEN_AFTER?> tests</li>
 			<li>Number of top detectors to clone: <?=TOP_TOCLONE?></li>
+			<li>Detector sorting field: <?=DETECTOR_SORT_FIELD?></li>
 		</ul>
 		<table>
 			<caption>Problem space</caption>
