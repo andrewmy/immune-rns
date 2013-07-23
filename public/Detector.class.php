@@ -40,7 +40,10 @@ class Detector
 
 	private function setAutoRadius()
 	{
-		$this->radius = $this->getNearestPoint()->distanceFrom($this->centre) - MAX_VARIATION;
+		$radius = $this->getNearestPoint()->distanceFrom($this->centre) - MAX_VARIATION;
+		$this->radius = defined('MAX_RADIUS')
+			? min(array(MAX_RADIUS, $radius))
+			: $radius;
 		return $this;
 	}
 	

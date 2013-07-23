@@ -36,6 +36,7 @@
 			<li>Maximum detector overlap: <?=MAX_OVERLAP?></li>
 			<li>Dimensions (sensors): <?=DIMENSIONS?></li>
 			<li>Maximum detector population: <?=MAX_POPULATION?></li>
+			<li>Maximum detector radius: <?=MAX_RADIUS?></li>
 			<li>Number of tests: <?=MAX_TESTS?></li>
 			<li>Next generation after <?=NEXT_GEN_AFTER?> tests</li>
 			<li>Number of top detectors to clone: <?=TOP_TOCLONE?></li>
