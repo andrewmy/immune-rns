@@ -2,35 +2,21 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<title>Real-value negative selection algorithm</title>
-		<style type="text/css">
-			* {
-				font-family: Tahoma, sans-serif;
-				font-size: 10pt;
-			}
-			table {
-				border-collapse: collapse;
-				border: 1px solid #000;
-				padding: 5px;
-			}
-			td, th {
-				padding: 5px;
-				border: 1px solid #000;
-			}
-			h1 {
-				font-size: 14pt;
-			}
-			h2 {
-				font-size: 13pt;
-			}
-			caption {
-				font-size: 12pt;
-				font-weight: bold;
-			}
-		</style>
+		<link type="text/css" rel="stylesheet" href="style.css"></link>
 	</head>
 	<body>
 		<h1>Real-value negative selection algorithm</h1>
-		<p>Settings:</p>
+		
+		<div id="menu">
+			<ul>
+				<li><a href="#settings">Settings</a></li>
+				<li><a href="#generations">Detector generations</a></li>
+				<li><a href="#tests">Tests</a></li>
+				<li><a href="#graphs">Graphs</a></li>
+			</ul>
+		</div>
+		
+		<h2 id="settings">Settings:</h2>
 		<ul>
 			<li>Maximum self-element variation: <?=MAX_VARIATION?></li>
 			<li>Maximum detector overlap: <?=MAX_OVERLAP?></li>
@@ -61,7 +47,7 @@
 			<? foreach($self as $item) { ?><li><?=$item?></li><? } ?>
 		</ul>
 
-		<table>
+		<table id="generations">
 			<caption>Detector generations</caption>
 			<thead><tr><th>#</th><th>Elements</th></tr></thead>
 			<tbody>
@@ -96,7 +82,7 @@
 			</tbody>
 		</table>
 
-		<table>
+		<table id="tests">
 			<caption>Tests</caption>
 			<thead><tr>
 				<th>#</th><th>Antigen</th><th>Result</th><th>Generation #</th><th>Detector #</th>
@@ -114,7 +100,9 @@
 			</tbody>
 		</table>
 		
-		<h2>Graphs</h2>
+		<p>Run time: <?=$runTime?> s.</p>
+		
+		<h2 id="graphs">Graphs</h2>
 		<p>Legend:</p>
 		<ul>
 			<li>Blue circle: detector</li>

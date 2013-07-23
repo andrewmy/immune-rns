@@ -16,6 +16,22 @@ require_once '../include/Point.class.php';
 require_once '../include/Vector.class.php';
 require_once '../include/Detector.class.php';
 
+// points' coords
+$space = array(
+	array('min' => 0,    'max' => 100,  'desc' => 'Train speed, km/h'),
+	array('min' => 0,    'max' => 150,  'desc' => 'Crossing car speed, km/h'),
+	array('min' => -100, 'max' => 1000, 'desc' => 'Distance from the train to the rendezvous, m'),
+	array('min' => -10,  'max' => 1000, 'desc' => 'Distance from the car to the rendezvous, m'),
+);
+Detector::$max_dim = 10;
+
+$self = array(
+	new Point(0,   5, 1000, 0),
+	new Point(50, 30, 900,  10),
+	new Point(20, 30, 600,  2)
+);
+
+
 if(have_xdebug()) {
 	ini_set('html_errors',1);
 	ini_set('xdebug.collect_vars', 'on');
