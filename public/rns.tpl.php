@@ -98,7 +98,9 @@
 
 		<table>
 			<caption>Tests</caption>
-			<thead><tr><th>#</th><th>Antigen</th><th>Result</th><th>Generation #</th></tr></thead>
+			<thead><tr>
+				<th>#</th><th>Antigen</th><th>Result</th><th>Generation #</th><th>Detector #</th>
+			</tr></thead>
 			<tbody>
 				<? foreach($tests as $n => $item) { ?>
 				<tr>
@@ -106,12 +108,20 @@
 					<td><?=$item['antigen']?></td>
 					<td><?=($item['result'] ? 'Alarm!' : 'OK')?></td>
 					<td><?=$item['generation']?></td>
+					<td><?=$item['detector_n']?></td>
 				</tr>
 				<? } ?>
 			</tbody>
 		</table>
 		
 		<h2>Graphs</h2>
+		<p>Legend:</p>
+		<ul>
+			<li>Blue circle: detector</li>
+			<li>Green dot: self</li>
+			<li>Red dot: antigen</li>
+			<li>Red dot in green circle: non-harmful antigen</li>
+		</ul>
 		<? for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
 			<p><br /><?=$space[$i]['desc'].'; '.$space[$i + 1]['desc']?></p>
 			<img src="graph.php?<?=http_build_query(array('dimensions' => array($i, $i + 1)))?>" />

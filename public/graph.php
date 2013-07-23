@@ -54,6 +54,10 @@ foreach($tests as $t) {
 	imageellipse($im,
 		$ratio * $t['antigen']->coords[$dimensions[0]], $ratio * $t['antigen']->coords[$dimensions[1]],
 		3, 3, $colorRed);
+	if($t['result'] == false)
+		imageellipse($im,
+			$ratio * $t['antigen']->coords[$dimensions[0]], $ratio * $t['antigen']->coords[$dimensions[1]],
+			6, 6, $colorGreen);
 }
 
 header('Content-type: image/png');

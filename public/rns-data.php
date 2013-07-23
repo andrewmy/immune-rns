@@ -25,7 +25,9 @@ Detector::generateList($space, $self);
 $generations[] = Detector::$D;
 
 for($i = 0; $i < MAX_TESTS; $i++) {
-	$tests[$i] = array('antigen' => null, 'result' => false, 'generation' => count($generations));
+	$tests[$i] = array(
+		'antigen' => null, 'result' => false, 'generation' => count($generations), 'detector_n' => 0
+	);
 	$antigen = new Point(Point::randomCoords($space));
 	$tests[$i]['antigen'] = $antigen;
 	
@@ -33,6 +35,7 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 		if($d->isActivatedBy($antigen)) {
 			$d->score++;
 			$detections[$i][] = array('antigen' => $antigen, 'detector' => $d, 'detector_n' => $n);
+			$tests[$i]['detector_n'] = $n;
 			$tests[$i]['result'] = true;
 		}
 	}
