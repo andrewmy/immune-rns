@@ -49,26 +49,11 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 }
 
-if(isset($_GET['graph'])) {
-	$w = 100;
-	$h = 100;
-	$xr = $w / ($space[0][1] - $space[0][0]);
-	$yr = $h / ($space[1][1] - $space[1][0]);
+$_SESSION['rns'] = array(
+	'space' => $space,
+	'detectors' => Detector::$D,
+	'self' => $self,
+	'tests' => $tests,
+);
 
-	$im = imagecreatetruecolor($w, $h);
-	$bg = imagecolorallocate($im, 255, 255, 255);
-	imagefilledrectangle($im, 0, 0, $w, $h, $bg);
-	$colorBlack = imagecolorallocate($im, 0, 0, 0);
-	$colorRed = imagecolorallocate($im, 255, 0, 0);
-	imagerectangle($im, 0, 0, $w - 1, $h - 1, $colorBlack);
-
-	foreach(Detector::$D as $d) {
-		imagesetpixel($im, $xr * $d->centre->coords[0], $yr * $d->centre->coords[1], $colorBlack);
-		imageellipse($im, $xr * $d->centre->coords[0], $yr * $d->centre->coords[1],
-			$xr * $d->radius, $yr * $d->radius, $colorRed);
-	}
-
-	header('Content-type: image/png');
-	imagepng($im);
-} else
-	 require './rns.tpl.php';
+require './rns.tpl.php';

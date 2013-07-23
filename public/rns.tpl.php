@@ -109,5 +109,11 @@
 				<? } ?>
 			</tbody>
 		</table>
+		
+		<h2>Graphs</h2>
+		<? for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
+			<p><?=$space[$i]['desc'].'; '.$space[$i + 1]['desc']?></p>
+			<img src="graph.php?<?=http_build_query(array('dimensions' => array($i, $i + 1)))?>" />
+		<? } ?>
 	</body>
 </html>
