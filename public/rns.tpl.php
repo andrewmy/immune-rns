@@ -36,7 +36,7 @@
 			<li>Maximum detector overlap: <?=MAX_OVERLAP?></li>
 			<li>Dimensions (sensors): <?=DIMENSIONS?></li>
 			<li>Maximum detector population: <?=MAX_POPULATION?></li>
-			<li>Maximum detector radius: <?=MAX_RADIUS?></li>
+			<? if(MAX_RADIUS > 0) { ?><li>Maximum detector radius: <?=MAX_RADIUS?></li><? } ?>
 			<li>Number of tests: <?=MAX_TESTS?></li>
 			<li>Next generation after <?=NEXT_GEN_AFTER?> tests</li>
 			<li>Number of top detectors to clone: <?=TOP_TOCLONE?></li>
@@ -113,7 +113,7 @@
 		
 		<h2>Graphs</h2>
 		<? for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
-			<p><?=$space[$i]['desc'].'; '.$space[$i + 1]['desc']?></p>
+			<p><br /><?=$space[$i]['desc'].'; '.$space[$i + 1]['desc']?></p>
 			<img src="graph.php?<?=http_build_query(array('dimensions' => array($i, $i + 1)))?>" />
 		<? } ?>
 	</body>

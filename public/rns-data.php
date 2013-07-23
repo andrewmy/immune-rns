@@ -38,7 +38,7 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 	unset($d);
 	
-	if($i>0 && $i % NEXT_GEN_AFTER == 0) {
+	if($i > 0 && $i % NEXT_GEN_AFTER == 0) {
 		foreach(Detector::$D as &$c) // $candidates
 			$c->overlap = $c->allOverlaps(Detector::$D);
 		unset($c);

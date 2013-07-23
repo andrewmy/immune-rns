@@ -41,7 +41,7 @@ class Detector
 	private function setAutoRadius()
 	{
 		$radius = $this->getNearestPoint()->distanceFrom($this->centre) - MAX_VARIATION;
-		$this->radius = defined('MAX_RADIUS')
+		$this->radius = MAX_RADIUS > 0
 			? min(array(MAX_RADIUS, $radius))
 			: $radius;
 		return $this;
@@ -64,11 +64,11 @@ class Detector
 		$new_centre = $this->getNearestDetector()->centre;
 		$v = new Vector($this->centre, $new_centre);
 		$v->multiply(-1);
-		if($v->norm == 0)
+		if($v->norm == 0) // FIXME
 			throw new Exception('Cloned detector is in the same location as parent');
-		$new_centre = $new_centre->moveByVector($v->multiply($this->radius/$v->norm));
-		$d=new Detector($new_centre);
-		$d->radius=$this->radius;
+		$new_centre = $new_centre->moveByVector($v->multiply($this->radius / $v->norm));
+		$d = new Detector($new_centre);
+		$d->radius = $this->radius;
 		return $d;
 	}
 	
@@ -139,8 +139,8 @@ class Detector
 
 	public static function varMovement()
 	{
-		return mt_rand(0,5) / 10;
-		// FIXME: exponential decay function
+		return mt_rand(0, 5) / 10;
+		// TODO: exponential decay function
 	}
 	
 
