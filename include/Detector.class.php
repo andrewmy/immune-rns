@@ -144,7 +144,7 @@ class Detector
 	}
 	
 
-	public static function generateList($space, $self)
+	public static function generateList($space, $self, $padding = false)
 	{
 		self::$S = $self;
 		$candidates = array();
@@ -153,6 +153,15 @@ class Detector
 			//echo "new detector $d<br>";
 			if($d->radius < 0)
 				continue; // discard
+			if($padding)
+				foreach($space as $n => $dimension) {
+					if(abs($dimension['max'] - $dimension['min']) >= $d->radius * 2) {
+						if($d->centre->coords[$n] - $d->radius < $dimension['min'])
+							$d->centre->coords[$n] = $dimension['min'] + $d->radius;
+						if($d->centre->coords[$n] + $d->radius > $dimension['max'])
+							$d->centre->coords[$n] = $dimension['max'] - $d->radius;
+					}
+				}
 			if(!empty($candidates)) foreach($candidates as $c) {
 				if($d->overlap($c->centre, $c->radius) > MAX_OVERLAP) {
 					//echo "overlap by ".$d->overlap($c->centre, $c->radius).", moving from $c -> ";

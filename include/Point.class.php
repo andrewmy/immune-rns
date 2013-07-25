@@ -50,12 +50,14 @@ class Point
 	}
 
 
-	public static function randomCoords($space,$decimals=2)
+	public static function randomCoords($space, $decimals = 2, $padding = 0)
 	{
 		$coords = array();
-		$f = pow(10,$decimals);
+		$f = pow(10, $decimals);
 		for($j = 0; $j < DIMENSIONS; $j++)
-			$coords[$j] = mt_rand($space[$j]['min'] * $f, $space[$j]['max'] * $f) / $f;
+			$coords[$j] = mt_rand(
+				($space[$j]['min'] + $padding) * $f,
+				($space[$j]['max'] + $padding) * $f) / $f;
 		return $coords;
 	}
 }

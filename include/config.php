@@ -17,6 +17,7 @@ $space = array(
 );
 
 $settings = array(
+	'pad_detectors'  => empty($getSettings) ? true : (int)@$getSettings['pad_detectors'],
 	'max_variation'  => empty($getSettings) ? 0.2 : @$getSettings['max_variation'],
 	'max_overlap'    => empty($getSettings) ? 0.1 : @$getSettings['max_overlap'],
 	'dimensions'     => count($space),
@@ -28,6 +29,7 @@ $settings = array(
 	'detector_sort_field' => empty($getSettings) ? 'score' : @$getSettings['detector_sort_field'],
 );
 
+define('PAD_DETECTORS',  $settings['pad_detectors']);
 define('MAX_VARIATION',  $settings['max_variation']);
 define('MAX_OVERLAP',    $settings['max_overlap']);
 define('DIMENSIONS',     $settings['dimensions']);

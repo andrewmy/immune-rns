@@ -13,7 +13,7 @@ $generations = array();
 $detections = array();
 $tests = array();
 
-Detector::generateList($space, $self);
+Detector::generateList($space, $self, PAD_DETECTORS);
 $generations[] = Detector::$D;
 
 for($i = 0; $i < MAX_TESTS; $i++) {
