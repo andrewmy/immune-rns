@@ -3,10 +3,23 @@
 error_reporting(E_ALL);
 
 $getSettings = !empty($_GET['settings']) ? $_GET['settings'] : array();
+
+// points' coords
+$space = array(
+	array('min' => 0,    'max' => 100,  'desc' => 'Train speed, km/h'),
+	array('min' => 0,    'max' => 150,  'desc' => 'Crossing car speed, km/h'),
+	array('min' => -20,  'max' => 20,   'desc' => 'Railway slope, %'),
+	array('min' => -20,  'max' => 20,   'desc' => 'Road slope, %'),
+	array('min' => -100, 'max' => 1000, 'desc' => 'Distance from the train to the rendezvous, m'),
+	array('min' => -10,  'max' => 1000, 'desc' => 'Distance from the car to the rendezvous, m'),
+	array('min' => -50,  'max' => 60,   'desc' => 'Air temperature, °C'),
+	array('min' => 0,    'max' => 100,  'desc' => 'Relative humidity, %'),
+);
+
 $settings = array(
 	'max_variation'  => empty($getSettings) ? 0.2 : @$getSettings['max_variation'],
 	'max_overlap'    => empty($getSettings) ? 0.1 : @$getSettings['max_overlap'],
-	'dimensions'     => empty($getSettings) ? 4   : @$getSettings['dimensions'],
+	'dimensions'     => count($space),
 	'max_population' => empty($getSettings) ? 20  : @$getSettings['max_population'],
 	'max_radius'     => empty($getSettings) ? 300 : @$getSettings['max_radius'],
 	'max_tests'      => empty($getSettings) ? 20  : @$getSettings['max_tests'],
@@ -29,19 +42,18 @@ require_once '../include/Point.class.php';
 require_once '../include/Vector.class.php';
 require_once '../include/Detector.class.php';
 
-// points' coords
-$space = array(
-	array('min' => 0,    'max' => 100,  'desc' => 'Train speed, km/h'),
-	array('min' => 0,    'max' => 150,  'desc' => 'Crossing car speed, km/h'),
-	array('min' => -100, 'max' => 1000, 'desc' => 'Distance from the train to the rendezvous, m'),
-	array('min' => -10,  'max' => 1000, 'desc' => 'Distance from the car to the rendezvous, m'),
-);
 Detector::$max_dim = 10;
 
 $self = array(
-	new Point(0,   5, 1000, 0),
-	new Point(50, 30, 900,  10),
-	new Point(20, 30, 600,  2)
+	new Point(0,   5, 0,  0,  1000, 0,   20, 50),
+	new Point(50, 30, 0,  0,  900,  100, 20, 50),
+	new Point(20, 30, 0,  0,  600,  100, 20, 50),
+	new Point(0,   5, 5,  0, 1000, 0,    20, 50),
+	new Point(40, 25, 5,  0, 900,  100,  20, 50),
+	new Point(20, 30, 5,  0, 600,  100,  20, 50),
+	new Point(0,   5, -5, 0, 1000, 0,    20, 50),
+	new Point(60, 35, -5, 0, 900,  100,  20, 50),
+	new Point(20, 30, -5, 0, 600,  100,  20, 50),
 );
 
 
