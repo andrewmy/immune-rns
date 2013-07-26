@@ -4,7 +4,8 @@ class Point
 {
 	public
 		$dimensions = DIMENSIONS,
-		$coords = array();
+		$coords = array(),
+		$dbId = 0;
 	
 
 	function __construct($coords)

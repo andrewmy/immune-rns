@@ -6,7 +6,9 @@ class Detector
 		$centre,
 		$radius = 0,
 		$score = 0,
-		$overlap = 0;
+		$overlap = 0,
+		$dbId = 0,
+		$parentDbId = 0;
 
 	public static
 		$D = array(),
@@ -69,6 +71,7 @@ class Detector
 		$new_centre = $new_centre->moveByVector($v->multiply($this->radius / $v->norm));
 		$d = new Detector($new_centre);
 		$d->radius = $this->radius;
+		$d->parentDbId = $this->dbId;
 		return $d;
 	}
 	
