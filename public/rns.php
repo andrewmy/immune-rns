@@ -38,7 +38,7 @@ $pointDimInsertStmt = $db->prepare("INSERT INTO point_dimensions (point_id, dime
 	VALUES (?, ?, ?)");
 $detectorInsertStmt = $db->prepare("INSERT INTO detectors (run_id, generation, parent_id,
 		centre_point_id, radius, score, overlap)
-	VALUES (?, ?, ?, ?', ?, ?, ?)");
+	VALUES (?, ?, ?, ?, ?, ?, ?)");
 $testInsertStmt = $db->prepare("INSERT INTO tests (run_id, antigen_point_id, result, generation,
 		detector_id)
 	VALUES (?, ?, ?, ?, ?)");
@@ -62,6 +62,12 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	$antigen = new Point(Point::randomCoords($space));
 	$tests[$i]['antigen'] = $antigen;
 	
+	$pointInsertStmt->execute(array('antigen'));
+	$antigenId = $db->lastInsertId();
+	foreach($space as $n => $dim) {
+		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $antigen->coords[$n]));
+	}
+	
 	foreach(Detector::$D as $n => &$d) {
 		if($d->isActivatedBy($antigen)) {
 			$d->score++;
@@ -72,39 +78,34 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 	unset($d);
 	
-	$pointInsertStmt->execute(array('antigen'));
-	$antigenId = $db->lastInsertId();
-	foreach($space as $n => $dim) {
-		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $antigen->coords[$n]));
-	}
-	
-	foreach(Detector::$D as &$d) {
-		$pointInsertStmt->execute(array('detector'));
-		$pointId = $db->lastInsertId();
-		foreach($space as $n => $dim) {
-			$pointDimInsertStmt->execute(array($pointId, $dim['id'], $d->centre->coords[$n]));
-		}
-		$detectorInsertStmt->execute(array(
-			$runId, $generationN, $d->parentDbId, $pointId, $d->radius, $d->score, $d->overlap
-		));
-		$d->dbId = $db->lastInsertId();
-	}
-	unset($d);
-	
 	$testInsertStmt->execute(array(
 		$runId, $antigenId, (int)$tests[$i]['result'], $generationN,
 		Detector::$D[$tests[$i]['detector_n']]->dbId
 	));
 	
-	if($i > 0 && $i % NEXT_GEN_AFTER == 0) {
-		foreach(Detector::$D as &$c) // $candidates
-			$c->overlap = $c->allOverlaps(Detector::$D);
+	if(($i > 0 && $i % NEXT_GEN_AFTER == 0) || $i == MAX_TESTS - 1) {
+		foreach(Detector::$D as &$candidate) { // $candidates
+			$candidate->overlap = $candidate->allOverlaps(Detector::$D);
+			$pointInsertStmt->execute(array('detector'));
+			$pointId = $db->lastInsertId();
+			foreach($space as $n => $dim) {
+				$pointDimInsertStmt->execute(array(
+					$pointId, $dim['id'], $candidate->centre->coords[$n]));
+			}
+			$detectorInsertStmt->execute(array(
+				$runId, $generationN, $candidate->parentDbId, $pointId, $candidate->radius,
+				$candidate->score, $candidate->overlap
+			));
+			$candidate->dbId = $db->lastInsertId();
+		}
 		unset($c);
-		Detector::sortByField(DETECTOR_SORT_FIELD);
-		for($j = 0; $j < TOP_TOCLONE; $j++)
-			Detector::$D[MAX_POPULATION - 1 - $j] = Detector::$D[$j]->makeClone();
-		$generations[] = Detector::$D;
-		$generationN++;
+		if($i != MAX_TESTS - 1) {
+			Detector::sortByField(DETECTOR_SORT_FIELD);
+			for($j = 0; $j < TOP_TOCLONE; $j++)
+				Detector::$D[MAX_POPULATION - 1 - $j] = Detector::$D[$j]->makeClone();
+			$generations[] = Detector::$D;
+			$generationN++;
+		}
 	}
 }
 
