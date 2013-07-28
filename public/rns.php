@@ -122,7 +122,9 @@ $_SESSION['rns'] = array(
 );
 
 $runTime = microtime(true) - $startTime;
+$memory = memory_get_usage();
 
-$db->query("UPDATE runs SET runtime = '$runTime', finished = '1' WHERE id = '$runId'");
+$db->query("UPDATE runs SET runtime = '$runTime', memory = '$memory', finished = '1' WHERE id = '$runId'");
 
+$memory = number_format($memory / 1024, 3);
 require '../template/rns.phtml';
