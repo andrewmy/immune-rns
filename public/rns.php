@@ -36,14 +36,17 @@ foreach($space as $n => $dim) {
 $pointInsertStmt = $db->prepare("INSERT INTO points (run_id, type) VALUES ('$runId', ?)");
 $pointDimInsertStmt = $db->prepare("INSERT INTO point_dimensions (point_id, dimension_id, `value`)
 	VALUES (?, ?, ?)");
+$detectorInsertStmt = $db->prepare("INSERT INTO detectors (run_id, generation, parent_id,
+		centre_point_id, radius, score, overlap)
+	VALUES (?, ?, ?, ?', ?, ?, ?)");
+$testInsertStmt = $db->prepare("INSERT INTO tests (run_id, antigen_point_id, result, generation,
+		detector_id)
+	VALUES (?, ?, ?, ?, ?)");
 
 foreach($self as $point) {
-	//$db->query("INSERT INTO points (run_id, type) VALUES ('$runId', 'self')");
 	$pointInsertStmt->execute(array('self'));
 	$pointId = $db->lastInsertId();
 	foreach($space as $n => $dim) {
-		//$db->query("INSERT INTO point_dimensions (point_id, dimension_id, `value`)
-		//	VALUES ('$pointId', '{$dim['id']}', '{$point->coords[$n]}')");
 		$pointDimInsertStmt->execute(array($pointId, $dim['id'], $point->coords[$n]));
 	}
 }
@@ -69,36 +72,29 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 	unset($d);
 	
-	//$db->query("INSERT INTO points (run_id, type) VALUES ('$runId', 'antigen')");
 	$pointInsertStmt->execute(array('antigen'));
 	$antigenId = $db->lastInsertId();
 	foreach($space as $n => $dim) {
-		//$db->query("INSERT INTO point_dimensions (point_id, dimension_id, `value`)
-		//	VALUES ('$antigenId', '{$dim['id']}', '{$antigen->coords[$n]}')");
 		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $antigen->coords[$n]));
 	}
 	
 	foreach(Detector::$D as &$d) {
-		//$db->query("INSERT INTO points (run_id, type) VALUES ('$runId', 'detector')");
 		$pointInsertStmt->execute(array('detector'));
 		$pointId = $db->lastInsertId();
 		foreach($space as $n => $dim) {
-			//$db->query("INSERT INTO point_dimensions (point_id, dimension_id, `value`)
-			//	VALUES ('$pointId', '{$dim['id']}', '{$d->centre->coords[$n]}')");
 			$pointDimInsertStmt->execute(array($pointId, $dim['id'], $d->centre->coords[$n]));
 		}
-		$db->query("INSERT INTO detectors (run_id, generation, parent_id, centre_point_id,
-				radius, score, overlap)
-			VALUES ('$runId', '$generationN', '{$d->parentDbId}', '{$pointId}',
-				'{$d->radius}', '{$d->score}', '{$d->overlap}')");
+		$detectorInsertStmt->execute(array(
+			$runId, $generationN, $d->parentDbId, $pointId, $d->radius, $d->score, $d->overlap
+		));
 		$d->dbId = $db->lastInsertId();
 	}
 	unset($d);
 	
-	$db->query("INSERT INTO tests (run_id, antigen_point_id, result, generation,
-			detector_id)
-		VALUES ('$runId', '$antigenId', '".(int)$tests[$i]['result']."', '$generationN',
-			'".Detector::$D[$tests[$i]['detector_n']]->dbId."')");
+	$testInsertStmt->execute(array(
+		$runId, $antigenId, (int)$tests[$i]['result'], $generationN,
+		Detector::$D[$tests[$i]['detector_n']]->dbId
+	));
 	
 	if($i > 0 && $i % NEXT_GEN_AFTER == 0) {
 		foreach(Detector::$D as &$c) // $candidates
