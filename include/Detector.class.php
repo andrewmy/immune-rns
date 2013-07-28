@@ -7,13 +7,17 @@ class Detector
 		$radius = 0,
 		$score = 0,
 		$overlap = 0,
+		$staticId = 0,
+		$parentStaticId = 0,
 		$dbId = 0,
+		$startDbId = 0,
 		$parentDbId = 0;
 
 	public static
 		$D = array(),
 		$S = array(),
-		$max_dim = 0;
+		$max_dim = 0,
+		$count = 0;
 	
 
 	/**
@@ -31,6 +35,8 @@ class Detector
 		$this->centre = $centre;
 		if($autoradius)
 			$this->setAutoRadius();
+		self::$count++;
+		$this->staticId = self::$count;
 	}
 
 
@@ -71,6 +77,7 @@ class Detector
 		$new_centre = $new_centre->moveByVector($v->multiply($this->radius / $v->norm));
 		$d = new Detector($new_centre);
 		$d->radius = $this->radius;
+		$d->parentStaticId = $this->staticId;
 		$d->parentDbId = $this->dbId;
 		return $d;
 	}

@@ -36,12 +36,13 @@ foreach($space as $n => $dim) {
 $pointInsertStmt = $db->prepare("INSERT INTO points (run_id, type) VALUES ('$runId', ?)");
 $pointDimInsertStmt = $db->prepare("INSERT INTO point_dimensions (point_id, dimension_id, `value`)
 	VALUES (?, ?, ?)");
-$detectorInsertStmt = $db->prepare("INSERT INTO detectors (run_id, generation, parent_id,
+$detectorInsertStmt = $db->prepare("INSERT INTO detectors (start_id, run_id, generation, parent_id,
 		centre_point_id, radius, score, overlap)
-	VALUES (?, ?, ?, ?, ?, ?, ?)");
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 $testInsertStmt = $db->prepare("INSERT INTO tests (run_id, antigen_point_id, result, generation,
 		detector_id)
 	VALUES (?, ?, ?, ?, ?)");
+$detectorUpdStartIdStmt = $db->prepare("UPDATE detectors SET start_id = ? WHERE id = ?");
 
 foreach($self as $point) {
 	$pointInsertStmt->execute(array('self'));
@@ -93,10 +94,14 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 					$pointId, $dim['id'], $candidate->centre->coords[$n]));
 			}
 			$detectorInsertStmt->execute(array(
-				$runId, $generationN, $candidate->parentDbId, $pointId, $candidate->radius,
-				$candidate->score, $candidate->overlap
+				$candidate->startDbId, $runId, $generationN, $candidate->parentDbId, $pointId,
+				$candidate->radius, $candidate->score, $candidate->overlap
 			));
 			$candidate->dbId = $db->lastInsertId();
+			if($candidate->startDbId == 0) {
+				$candidate->startDbId = $candidate->dbId;
+				$detectorUpdStartIdStmt->execute(array($candidate->dbId, $candidate->startDbId));
+			}
 		}
 		unset($c);
 		if($i != MAX_TESTS - 1) {
