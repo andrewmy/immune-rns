@@ -44,14 +44,6 @@ $testInsertStmt = $db->prepare("INSERT INTO tests (run_id, antigen_point_id, res
 	VALUES (?, ?, ?, ?, ?)");
 $detectorUpdStartIdStmt = $db->prepare("UPDATE detectors SET start_id = ? WHERE id = ?");
 
-foreach($self as $point) {
-	$pointInsertStmt->execute(array('self'));
-	$pointId = $db->lastInsertId();
-	foreach($space as $n => $dim) {
-		$pointDimInsertStmt->execute(array($pointId, $dim['id'], $point->coords[$n]));
-	}
-}
-
 Detector::generateList($space, $self, PAD_DETECTORS);
 $generations[] = Detector::$D;
 $generationN = 0;
@@ -63,12 +55,6 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	$antigen = new Point(Point::randomCoords($space));
 	$tests[$i]['antigen'] = $antigen;
 	
-	$pointInsertStmt->execute(array('antigen'));
-	$antigenId = $db->lastInsertId();
-	foreach($space as $n => $dim) {
-		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $antigen->coords[$n]));
-	}
-	
 	foreach(Detector::$D as $n => &$d) {
 		if($d->isActivatedBy($antigen)) {
 			$d->score++;
@@ -79,31 +65,11 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 	unset($d);
 	
-	$testInsertStmt->execute(array(
-		$runId, $antigenId, (int)$tests[$i]['result'], $generationN,
-		Detector::$D[$tests[$i]['detector_n']]->dbId
-	));
-	
 	if(($i > 0 && $i % NEXT_GEN_AFTER == 0) || $i == MAX_TESTS - 1) {
 		foreach(Detector::$D as &$candidate) { // $candidates
 			$candidate->overlap = $candidate->allOverlaps(Detector::$D);
-			$pointInsertStmt->execute(array('detector'));
-			$pointId = $db->lastInsertId();
-			foreach($space as $n => $dim) {
-				$pointDimInsertStmt->execute(array(
-					$pointId, $dim['id'], $candidate->centre->coords[$n]));
-			}
-			$detectorInsertStmt->execute(array(
-				$candidate->startDbId, $runId, $generationN, $candidate->parentDbId, $pointId,
-				$candidate->radius, $candidate->score, $candidate->overlap
-			));
-			$candidate->dbId = $db->lastInsertId();
-			if($candidate->startDbId == 0) {
-				$candidate->startDbId = $candidate->dbId;
-				$detectorUpdStartIdStmt->execute(array($candidate->dbId, $candidate->startDbId));
-			}
 		}
-		unset($c);
+		unset($candidate);
 		if($i != MAX_TESTS - 1) {
 			Detector::sortByField(DETECTOR_SORT_FIELD);
 			for($j = 0; $j < TOP_TOCLONE; $j++)
@@ -112,6 +78,54 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 			$generationN++;
 		}
 	}
+}
+
+$runTimeNoDb = microtime(true) - $startTime;
+$memoryNoDb = memory_get_usage();
+
+foreach($self as $point) {
+	$pointInsertStmt->execute(array('self'));
+	$pointId = $db->lastInsertId();
+	foreach($space as $n => $dim)
+		$pointDimInsertStmt->execute(array($pointId, $dim['id'], $point->coords[$n]));
+}
+
+foreach($generations as $generationN => $generation) {
+	foreach(Detector::$D as &$candidate) { // $candidates
+		$pointInsertStmt->execute(array('detector'));
+		$pointId = $db->lastInsertId();
+		foreach($space as $n => $dim) {
+			$pointDimInsertStmt->execute(array(
+				$pointId, $dim['id'], $candidate->centre->coords[$n]));
+		}
+		if($candidate->parentStaticId > 0) {
+			$parent = Detector::findByField('staticId', $candidate->parentStaticId);
+			if(!empty($parent))
+				$candidate->parentDbId = $parent->dbId;
+		}
+		$detectorInsertStmt->execute(array(
+			$candidate->startDbId, $runId, $generationN, $candidate->parentDbId, $pointId,
+			$candidate->radius, $candidate->score, $candidate->overlap
+		));
+		$candidate->dbId = $db->lastInsertId();
+		if($candidate->startDbId == 0) {
+			$candidate->startDbId = $candidate->dbId;
+			$detectorUpdStartIdStmt->execute(array($candidate->dbId, $candidate->dbId));
+		}
+	}
+	unset($candidate);
+}
+
+foreach($tests as $testN => $test) {
+	$pointInsertStmt->execute(array('antigen'));
+	$antigenId = $db->lastInsertId();
+	foreach($space as $n => $dim)
+		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $test['antigen']->coords[$n]));
+	
+	$testInsertStmt->execute(array(
+		$runId, $antigenId, (int)$test['result'], $generationN,
+		Detector::$D[$test['detector_n']]->dbId
+	));
 }
 
 $_SESSION['rns'] = array(
@@ -124,7 +138,11 @@ $_SESSION['rns'] = array(
 $runTime = microtime(true) - $startTime;
 $memory = memory_get_usage();
 
-$db->query("UPDATE runs SET runtime = '$runTime', memory = '$memory', finished = '1' WHERE id = '$runId'");
+$db->query("UPDATE runs SET
+	runtime_nodb = '$runTimeNoDb', memory_nodb = '$memoryNoDb', runtime = '$runTime', memory = '$memory',
+	finished = '1'
+	WHERE id = '$runId'");
 
+$memoryNoDb = number_format($memoryNoDb / 1024, 3);
 $memory = number_format($memory / 1024, 3);
 require '../template/rns.phtml';

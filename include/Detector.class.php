@@ -205,4 +205,14 @@ class Detector
 		foreach($arr as $d)
 			self::$D[] = $d;
 	}
+	
+	
+	public static function findByField($field, $value)
+	{
+		foreach(self::$D as $d) {
+			if($d->$field == $value)
+				return $d;
+		}
+		return false;
+	}
 }
