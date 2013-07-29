@@ -1,5 +1,5 @@
 @media print {
-	#menu, .no-print {
+	#menu, .no-print, input[type=submit], input[type=button] {
 		display: none;
 	}
 }

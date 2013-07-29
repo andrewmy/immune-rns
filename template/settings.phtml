@@ -1,3 +1,23 @@
+<script>
+	var space = <?=json_encode($space)?>,
+		selfCount = <?=count($self)?>;
+	$(function(){
+		$('#self-add').click(function(){
+			var $li = $('<li id="self-'+selfCount+'" style="display:none"></li>');
+			$.each(space, function(i, el)  {
+				$li.append('<input type="text" name="self['+selfCount+']['+i+']" value="" size="5" /> ');
+			});
+			$li.append('<input type="button" value="x" id="self-remove" rel="'+selfCount+'" />');
+			$('#self').append($li);
+			$('#self-'+selfCount).slideDown();
+			selfCount++;
+		});
+		$('.self-remove').click(function(){
+			$('#self-'+$(this).attr('rel')).slideUp();
+		});
+	});
+</script>
+
 <form method="GET" action="rns.php">
 
 	<h2 id="settings">Settings</h2>
@@ -64,18 +84,25 @@
 			<? foreach($space as $n => $item) { ?>
 			<tr>
 				<td><?=($n + 1)?>. <?=$item['desc']?></td>
-				<td><?=$item['min']?></td>
-				<td><?=$item['max']?></td>
+				<td><input type="text" name="space[<?=$n?>][min]" value="<?=$item['min']?>" size="5" /></td>
+				<td><input type="text" name="space[<?=$n?>][max]" value="<?=$item['max']?>" size="5" /></td>
 			</tr>
 			<? } ?>
 		</tbody>
 	</table>
 
 	<h2>Self elements</h2>
-	<ul>
-		<? foreach($self as $item) { ?><li><?=$item?></li><? } ?>
-	</ul>
+	<ol id="self">
+		<? foreach($self as $n => $item) { ?>
+		<li id="self-<?=$n?>">
+			<? foreach($item->coords as $n2 => $coord) { ?>
+			<input type="text" name="self[<?=$n?>][<?=$n2?>]" value="<?=$coord?>" size="5" />
+			<? } ?>
+			<input type="button" value="x" class="self-remove" rel="<?=$n?>" />
+		</li>
+		<? } ?>
+	</ol>
+	<p><input type="button" value="Add self element" id="self-add" /></p>
 	
-	<input type="submit" value="Launch" class="no-print" />
-
+	<input type="submit" value="Launch" />
 </form>

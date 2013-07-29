@@ -3,6 +3,8 @@
 error_reporting(E_ALL);
 
 $getSettings = !empty($_GET['settings']) ? $_GET['settings'] : array();
+$getSpace = !empty($_GET['space']) ? $_GET['space'] : array();
+$getSelf = !empty($_GET['self']) ? $_GET['self'] : array();
 
 // points' coords
 $space = array(
@@ -15,6 +17,12 @@ $space = array(
 	array('min' => -50,  'max' => 60,   'desc' => 'Air temperature, °C'),
 	array('min' => 0,    'max' => 100,  'desc' => 'Relative humidity, %'),
 );
+
+if(!empty($getSpace))
+	foreach($getSpace as $n => $dim) {
+		$space[$n]['min'] = (int)@$dim['min'];
+		$space[$n]['max'] = (int)@$dim['max'];
+	}
 
 $settings = array(
 	'pad_detectors'  => empty($getSettings) ? true : (int)@$getSettings['pad_detectors'],
@@ -46,17 +54,30 @@ require_once '../include/Detector.class.php';
 
 Detector::$max_dim = 10;
 
-$self = array(
-	new Point(0,   5, 0,  0,  1000, 0,   20, 50),
-	new Point(50, 30, 0,  0,  900,  100, 20, 50),
-	new Point(20, 30, 0,  0,  600,  100, 20, 50),
-	new Point(0,   5, 5,  0, 1000, 0,    20, 50),
-	new Point(40, 25, 5,  0, 900,  100,  20, 50),
-	new Point(20, 30, 5,  0, 600,  100,  20, 50),
-	new Point(0,   5, -5, 0, 1000, 0,    20, 50),
-	new Point(60, 35, -5, 0, 900,  100,  20, 50),
-	new Point(20, 30, -5, 0, 600,  100,  20, 50),
-);
+$selfData = empty($getSelf)
+	? array(
+		array(0,   5, 0,  0,  1000, 0,   20, 50),
+		array(50, 30, 0,  0,  900,  100, 20, 50),
+		array(20, 30, 0,  0,  600,  100, 20, 50),
+		array(0,   5, 5,  0, 1000, 0,    20, 50),
+		array(40, 25, 5,  0, 900,  100,  20, 50),
+		array(20, 30, 5,  0, 600,  100,  20, 50),
+		array(0,   5, -5, 0, 1000, 0,    20, 50),
+		array(60, 35, -5, 0, 900,  100,  20, 50),
+		array(20, 30, -5, 0, 600,  100,  20, 50),
+	)
+	: $getSelf;
+$self = array();
+foreach($selfData as $row) {
+	foreach($row as $n => &$value) {
+		if($value < $space[$n]['min'])
+			$value = $space[$n]['min'];
+		elseif($value > $space[$n]['max'])
+			$value = $space[$n]['max'];
+	}
+	unset($value);
+	$self[] = new Point($row);
+}
 
 
 if(have_xdebug()) {
