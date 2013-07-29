@@ -192,7 +192,7 @@ if(DB_RECORD) {
 
 		$testInsertStmt->execute(array(
 			$runId, $antigenId, (int)$test['result'], $test['generation'],
-			$generations[$test['generation']][$test['detector_n']]->dbId
+			$generations[$test['generation'] - 1][$test['detector_n']]->dbId
 		));
 	}
 }
