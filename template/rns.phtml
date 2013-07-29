@@ -46,6 +46,14 @@
 									<td><?=$item2->score?></td>
 								</tr>
 								<? } ?>
+								<tr>
+									<td>Average</td>
+									<td><?=$generationStats[$n]['meanCentre']->formatted()?></td>
+									<td><?=number_format($generationStats[$n]['meanRadius'], 3)?></td>
+									<td><?=number_format($generationStats[$n]['meanOverlap'], 3)?></td>
+									<td>–</td>
+									<td><?=$generationStats[$n]['meanScore']?></td>
+								</tr>
 							</tbody>
 						</table>
 					</td>
@@ -72,8 +80,12 @@
 			</tbody>
 		</table>
 		
-		<p>Run time: <?=$runTime[0]?> s main, <?=$runTime[1]?> s total.</p>
-		<p>Memory: <?=$memory[0]?> KB main, <?=$memory[1]?> KB final.</p>
+		<p>Run time: <?=$runTime[0]?> s main,
+			<?=$runTime[1]?> s with stats,
+			<?=$runTime[2]?> s total.</p>
+		<p>Memory: <?=$memory[0]?> KB main,
+			<?=$memory[1]?> KB after stats,
+			<?=$memory[2]?> KB final.</p>
 		
 		<h2 id="graphs">Graphs</h2>
 		<p>Legend:</p>

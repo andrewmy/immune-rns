@@ -23,12 +23,17 @@
 	<h2 id="settings">Settings</h2>
 	<table class="no-borders">
 	<tr>
-		<td>Pad detectors from space min/max values:</td>
+		<td>&nbsp;</td>
 		<td>
-			<input type="radio" name="settings[pad_detectors]" value="1" id="pad_1"<?=(PAD_DETECTORS ? ' checked' : '')?> />
-			<label for="pad_1">Yes</label>
-			<input type="radio" name="settings[pad_detectors]" value="0" id="pad_0"<?=(!PAD_DETECTORS ? ' checked' : '')?> />
-			<label for="pad_0">No</label>
+			<input type="checkbox" name="settings[pad_detectors]" value="1" id="pad"<?=(PAD_DETECTORS ? ' checked' : '')?> />
+			<label for="pad">Pad detectors from space min/max values</label>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input type="checkbox" name="settings[db_record]" value="1" id="db-record"<?=(DB_RECORD ? ' checked' : '')?> />
+			<label for="db-record">Record data into database</label>
 		</td>
 	</tr>
 	<tr>
