@@ -83,8 +83,8 @@ if(count($dimensions) == 2) {
 		if($tmp == 0)
 			$tmp = 1;
 		$hUnitsPerUnit = $hSpace / $tmp;
-		if(floor($wUnitsPerUnit * 10) % 10 == 0
-				&& floor($hUnitsPerUnit * 10) % 10 == 0)
+		if(floor($wUnitsPerUnit * 10) % 50 == 0
+				&& floor($hUnitsPerUnit * 10) % 50 == 0)
 			break;
 	}
 	$wUnitsPerUnit = floor($wUnitsPerUnit);
