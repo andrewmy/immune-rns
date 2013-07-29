@@ -6,6 +6,22 @@ $startTime = microtime(true);
 
 require_once '../include/config.php';
 
+
+function stdev($array) {
+	// square root of sum of squares divided by N-1
+	$sum = array_sum($array);
+	$count = count($array);
+	return sqrt(
+		array_sum(
+			array_map(
+				function($x, $mean) { return pow($x - $mean, 2); },
+				$array,
+				array_fill(0, $count, $sum / $count)
+			)
+		) / (count($array) - 1)
+	);
+}
+
 /**
  * TODO:
  * - 
@@ -88,29 +104,46 @@ $runTime[] = microtime(true) - $startTime;
 $memory[] = memory_get_usage();
 
 $generationStats = array();
-foreach($generations as $generationN => $generation) {
-	$generationStats[$generationN]['meanCentre'] = $sumCentre = array();
-	$generationStats[$generationN]['meanRadius'] =
-		$generationStats[$generationN]['meanOverlap'] =
-		$generationStats[$generationN]['meanScore'] = 
+foreach($generations as $gN => $generation) {
+	$generationStats[$gN]['meanCentre'] =
+		$generationStats[$gN]['stdevCentre'] =
+		$sumCentre = $centreCoords = $radii = $overlaps = $scores = array();
+	$generationStats[$gN]['meanRadius'] =
+		$generationStats[$gN]['meanOverlap'] =
+		$generationStats[$gN]['meanScore'] = 
+		$generationStats[$gN]['stdevRadius'] =
+		$generationStats[$gN]['stdevOverlap'] =
+		$generationStats[$gN]['stdevScore'] = 
 		$sumRadius = $sumOverlap = $sumScore = 0;
 	foreach($generation as $d) {
 		foreach($d->centre->coords as $n => $coord) {
 			if(empty($sumCentre[$n]))
 				$sumCentre[$n] = 0;
 			$sumCentre[$n] += $coord;
+			if(empty($centreCoords[$n]))
+				$centreCoords[$n] = array();
+			$centreCoords[$n][] = $coord;
 		}
 		$sumRadius += $d->radius;
+		$radii[] = $d->radius;
 		$sumOverlap += $d->overlap;
+		$overlaps[] = $d->overlap;
 		$sumScore += $d->score;
+		$scores[] = $d->score;
 	}
 	$dCount = count($generation);
-	foreach($sumCentre as $n => $coord)
-		$generationStats[$generationN]['meanCentre'][$n] = $coord / $dCount;
-	$generationStats[$generationN]['meanCentre'] = new Point($generationStats[$generationN]['meanCentre']);
-	$generationStats[$generationN]['meanRadius'] = $sumRadius / $dCount;
-	$generationStats[$generationN]['meanOverlap'] = $sumOverlap / $dCount;
-	$generationStats[$generationN]['meanScore'] = $sumScore / $dCount;
+	foreach($sumCentre as $n => $coord) {
+		$generationStats[$gN]['meanCentre'][$n] = $coord / $dCount;
+		$generationStats[$gN]['stdevCentre'][$n] = stdev($centreCoords[$n]);
+	}
+	$generationStats[$gN]['meanCentre'] = new Point($generationStats[$gN]['meanCentre']);
+	$generationStats[$gN]['meanRadius'] = $sumRadius / $dCount;
+	$generationStats[$gN]['meanOverlap'] = $sumOverlap / $dCount;
+	$generationStats[$gN]['meanScore'] = $sumScore / $dCount;
+	$generationStats[$gN]['stdevCentre'] = new Point($generationStats[$gN]['stdevCentre']);
+	$generationStats[$gN]['stdevRadius'] = stdev($radii);
+	$generationStats[$gN]['stdevOverlap'] = stdev($overlaps);
+	$generationStats[$gN]['stdevScore'] = stdev($scores);
 }
 
 $runTime[] = microtime(true) - $startTime;
