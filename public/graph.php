@@ -30,14 +30,18 @@ if(count($dimensions) == 2) {
 	$colorBlue = imagecolorallocate($im, 224, 224, 255);
 	$colorDarkBlue = imagecolorallocate($im, 0, 0, 255);
 	$colorGray = imagecolorallocate($im, 224, 224, 224);
+	$colorYellow = imagecolorallocate($im, 255, 255, 0);
 
 	foreach($detectors as $d) {
-		imagesetpixel($im,
-			$ratio * $d->centre->coords[$dimensions[0]], $ratio * $d->centre->coords[$dimensions[1]],
-			$colorDarkBlue);
 		imagefilledellipse($im,
 			$ratio * $d->centre->coords[$dimensions[0]], $ratio * $d->centre->coords[$dimensions[1]],
 			$ratio * $d->radius, $ratio * $d->radius, $colorBlue);
+		/* imagesetpixel($im,
+			$ratio * $d->centre->coords[$dimensions[0]], $ratio * $d->centre->coords[$dimensions[1]],
+			$colorDarkBlue); */
+		imagefilledellipse($im,
+			$ratio * $d->centre->coords[$dimensions[0]], $ratio * $d->centre->coords[$dimensions[1]],
+				6, 6, $colorDarkBlue);
 		imageellipse($im,
 			$ratio * $d->centre->coords[$dimensions[0]], $ratio * $d->centre->coords[$dimensions[1]],
 			$ratio * $d->radius, $ratio * $d->radius, $colorDarkBlue);
@@ -53,17 +57,17 @@ if(count($dimensions) == 2) {
 	}
 
 	foreach($tests as $t) {
-		if($t['result'] == false) {
+		/* if($t['result'] == false) {
 			imagefilledellipse($im,
 				$ratio * $t['antigen']->coords[$dimensions[0]], $ratio * $t['antigen']->coords[$dimensions[1]],
 				16, 16, $colorGreen);
-		}
-		imagesetpixel($im,
+		} */
+		/* imagesetpixel($im,
 			$ratio * $t['antigen']->coords[$dimensions[0]], $ratio * $t['antigen']->coords[$dimensions[1]],
-			$colorRed);
+			$colorRed); */
 		imagefilledellipse($im,
 			$ratio * $t['antigen']->coords[$dimensions[0]], $ratio * $t['antigen']->coords[$dimensions[1]],
-				8, 8, $colorRed);
+				8, 8, $t['result'] ? $colorRed : $colorYellow);
 	}
 	
 	// grey out limits
