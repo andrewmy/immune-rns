@@ -14,6 +14,8 @@ require_once '../include/config.php';
 $generations = array();
 $detections = array();
 $tests = array();
+$runtime = array();
+$memory = array();
 
 $db = new PDO("mysql:host=localhost;dbname=rtu_rns", 'root', '');
 $db->query('SET NAMES utf8');
@@ -80,8 +82,8 @@ for($i = 0; $i < MAX_TESTS; $i++) {
 	}
 }
 
-$runTimeNoDb = microtime(true) - $startTime;
-$memoryNoDb = memory_get_usage();
+$runTime[] = microtime(true) - $startTime;
+$memory[] = memory_get_usage();
 
 foreach($self as $point) {
 	$pointInsertStmt->execute(array('self'));
@@ -91,7 +93,7 @@ foreach($self as $point) {
 }
 
 foreach($generations as $generationN => $generation) {
-	foreach(Detector::$D as &$candidate) { // $candidates
+	foreach($generation as &$candidate) { // $candidates
 		$pointInsertStmt->execute(array('detector'));
 		$pointId = $db->lastInsertId();
 		foreach($space as $n => $dim) {
@@ -123,8 +125,8 @@ foreach($tests as $testN => $test) {
 		$pointDimInsertStmt->execute(array($antigenId, $dim['id'], $test['antigen']->coords[$n]));
 	
 	$testInsertStmt->execute(array(
-		$runId, $antigenId, (int)$test['result'], $generationN,
-		Detector::$D[$test['detector_n']]->dbId
+		$runId, $antigenId, (int)$test['result'], $test['generation'],
+		$generations[$test['generation']][$test['detector_n']]->dbId
 	));
 }
 
@@ -135,14 +137,15 @@ $_SESSION['rns'] = array(
 	'tests' => $tests,
 );
 
-$runTime = microtime(true) - $startTime;
-$memory = memory_get_usage();
+$runTime[] = microtime(true) - $startTime;
+$memory[] = memory_get_usage();
 
 $db->query("UPDATE runs SET
-	runtime_nodb = '$runTimeNoDb', memory_nodb = '$memoryNoDb', runtime = '$runTime', memory = '$memory',
+	runtime_nodb = '{$runTime[0]}', memory_nodb = '{$memory[0]}',
+	runtime = '{$runTime[1]}', memory = '{$memory[1]}',
 	finished = '1'
 	WHERE id = '$runId'");
 
-$memoryNoDb = number_format($memoryNoDb / 1024, 3);
-$memory = number_format($memory / 1024, 3);
+$memory[0] = number_format($memory[0] / 1024, 3);
+$memory[1] = number_format($memory[1] / 1024, 3);
 require '../template/rns.phtml';
