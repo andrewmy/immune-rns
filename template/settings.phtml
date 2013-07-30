@@ -1,3 +1,13 @@
+<style>
+	.settings-container {
+		overflow: hidden;
+		width: 100%;
+	}
+	.settings-part-container {
+		float: left;
+		padding: 0 40px 40px 0;
+	}
+</style>
 <script>
 	var space = <?=json_encode($space)?>,
 		selfCount = <?=count($self)?>;
@@ -21,93 +31,102 @@
 <form method="GET" action="rns.php">
 
 	<h2 id="settings">Settings</h2>
-	<table class="no-borders">
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<input type="checkbox" name="settings[pad_detectors]" value="1" id="pad"<?=(PAD_DETECTORS ? ' checked' : '')?> />
-			<label for="pad">Pad detectors from space min/max values</label>
-		</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>
-			<input type="checkbox" name="settings[db_record]" value="1" id="db-record"<?=(DB_RECORD ? ' checked' : '')?> />
-			<label for="db-record">Record data into database</label>
-		</td>
-	</tr>
-	<tr>
-		<td>Maximum self-element variation:</td>
-		<td><input type="text" name="settings[max_variation]" value="<?=MAX_VARIATION?>" /></td>
-	</tr>
-	<tr>
-		<td>Maximum detector overlap:</td>
-		<td><input type="text" name="settings[max_overlap]" value="<?=MAX_OVERLAP?>" /></td>
-	</tr>
-	<tr>
-		<td>Dimensions (sensors):</td>
-		<td>
-			<?=DIMENSIONS?>
-			<input type="hidden" name="settings[dimensions]" value="<?=DIMENSIONS?>" />
-		</td>
-	</tr>
-	<tr>
-		<td>Maximum detector population:</td>
-		<td><input type="text" name="settings[max_population]" value="<?=MAX_POPULATION?>" /></td>
-	</tr>
-	<tr>
-		<td>Maximum detector radius:</td>
-		<td><input type="text" name="settings[max_radius]" value="<?=MAX_RADIUS?>" /></td>
-	</tr>
-	<tr>
-		<td>Number of tests:</td>
-		<td><input type="text" name="settings[max_tests]" value="<?=MAX_TESTS?>" /></td>
-	</tr>
-	<tr>
-		<td>Next generation after</td>
-		<td><input type="text" name="settings[next_gen_after]" value="<?=NEXT_GEN_AFTER?>" /> tests</td>
-	</tr>
-	<tr>
-		<td>Number of top detectors to clone:</td>
-		<td><input type="text" name="settings[top_toclone]" value="<?=TOP_TOCLONE?>" /></td>
-	</tr>
-	<tr>
-		<td>Detector sorting field:</td>
-		<td>
-			<select name="settings[detector_sort_field]">
-				<option value="score"<?=(DETECTOR_SORT_FIELD == 'score' ? ' selected' : '')?>>Score</option>
-				<option value="overlap"<?=(DETECTOR_SORT_FIELD == 'overlap' ? ' selected' : '')?>>Overlap</option>
-			</select>
-		</td>
-	</tr>
-	</table>
-	
-	<table>
-		<caption>Problem space</caption>
-		<thead><tr><th>Dimension</th><th>Minimum</th><th>Maximum</th></tr></thead>
-		<tbody>
-			<? foreach($space as $n => $item) { ?>
-			<tr>
-				<td><?=($n + 1)?>. <?=$item['desc']?></td>
-				<td><input type="text" name="space[<?=$n?>][min]" value="<?=$item['min']?>" size="5" /></td>
-				<td><input type="text" name="space[<?=$n?>][max]" value="<?=$item['max']?>" size="5" /></td>
-			</tr>
-			<? } ?>
-		</tbody>
-	</table>
+	<div class="settings-container">
+		<div class="settings-part-container">
+		<table class="no-borders">
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="checkbox" name="settings[pad_detectors]" value="1" id="pad"<?=(PAD_DETECTORS ? ' checked' : '')?> />
+				<label for="pad">Pad detectors from space min/max values</label>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="checkbox" name="settings[db_record]" value="1" id="db-record"<?=(DB_RECORD ? ' checked' : '')?> />
+				<label for="db-record">Record data into database</label>
+			</td>
+		</tr>
+		<tr>
+			<td>Maximum self-element variation:</td>
+			<td><input type="text" name="settings[max_variation]" value="<?=MAX_VARIATION?>" /></td>
+		</tr>
+		<tr>
+			<td>Maximum detector overlap:</td>
+			<td><input type="text" name="settings[max_overlap]" value="<?=MAX_OVERLAP?>" /></td>
+		</tr>
+		<tr>
+			<td>Dimensions (sensors):</td>
+			<td>
+				<?=DIMENSIONS?>
+				<input type="hidden" name="settings[dimensions]" value="<?=DIMENSIONS?>" />
+			</td>
+		</tr>
+		<tr>
+			<td>Maximum detector population:</td>
+			<td><input type="text" name="settings[max_population]" value="<?=MAX_POPULATION?>" /></td>
+		</tr>
+		<tr>
+			<td>Maximum detector radius:</td>
+			<td><input type="text" name="settings[max_radius]" value="<?=MAX_RADIUS?>" /></td>
+		</tr>
+		<tr>
+			<td>Number of tests:</td>
+			<td><input type="text" name="settings[max_tests]" value="<?=MAX_TESTS?>" /></td>
+		</tr>
+		<tr>
+			<td>Next generation after</td>
+			<td><input type="text" name="settings[next_gen_after]" value="<?=NEXT_GEN_AFTER?>" /> tests</td>
+		</tr>
+		<tr>
+			<td>Number of top detectors to clone:</td>
+			<td><input type="text" name="settings[top_toclone]" value="<?=TOP_TOCLONE?>" /></td>
+		</tr>
+		<tr>
+			<td>Detector sorting field:</td>
+			<td>
+				<select name="settings[detector_sort_field]">
+					<option value="score"<?=(DETECTOR_SORT_FIELD == 'score' ? ' selected' : '')?>>Score</option>
+					<option value="overlap"<?=(DETECTOR_SORT_FIELD == 'overlap' ? ' selected' : '')?>>Overlap</option>
+				</select>
+			</td>
+		</tr>
+		</table>
+		</div>
 
-	<h2>Self elements</h2>
-	<ol id="self">
-		<? foreach($self as $n => $item) { ?>
-		<li id="self-<?=$n?>">
-			<? foreach($item->coords as $n2 => $coord) { ?>
-			<input type="text" name="self[<?=$n?>][<?=$n2?>]" value="<?=$coord?>" size="5" />
+		<div class="settings-part-container">
+		<br/><br/>
+		<table>
+			<caption>Problem space</caption>
+			<thead><tr><th>Dimension</th><th>Minimum</th><th>Maximum</th></tr></thead>
+			<tbody>
+				<? foreach($space as $n => $item) { ?>
+				<tr>
+					<td><?=($n + 1)?>. <?=$item['desc']?></td>
+					<td><input type="text" name="space[<?=$n?>][min]" value="<?=$item['min']?>" size="5" /></td>
+					<td><input type="text" name="space[<?=$n?>][max]" value="<?=$item['max']?>" size="5" /></td>
+				</tr>
+				<? } ?>
+			</tbody>
+		</table>
+		</div>
+
+		<div class="settings-part-container">
+		<h2>Self elements</h2>
+		<ol id="self">
+			<? foreach($self as $n => $item) { ?>
+			<li id="self-<?=$n?>">
+				<? foreach($item->coords as $n2 => $coord) { ?>
+				<input type="text" name="self[<?=$n?>][<?=$n2?>]" value="<?=$coord?>" size="5" />
+				<? } ?>
+				<input type="button" value="x" class="self-remove" rel="<?=$n?>" />
+			</li>
 			<? } ?>
-			<input type="button" value="x" class="self-remove" rel="<?=$n?>" />
-		</li>
-		<? } ?>
-	</ol>
-	<p><input type="button" value="Add self element" id="self-add" /></p>
+		</ol>
+		<p><input type="button" value="Add self element" id="self-add" /></p>
+		</div>
+	</div>
 	
 	<input type="submit" value="Launch" />
 </form>
