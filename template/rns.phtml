@@ -18,13 +18,13 @@
 			</ul>
 		</div>
 		
-		<? require '../template/settings.phtml'; ?>
+		<?php require './template/settings.phtml'; ?>
 
 		<table id="generations">
 			<caption>Detector generations</caption>
 			<thead><tr><th>#</th><th>Elements</th></tr></thead>
 			<tbody>
-				<? foreach($generations as $n => $item) { ?>
+				<?php foreach($generations as $n => $item) { ?>
 				<tr>
 					<td><?=($n+1)?></td>
 					<td>
@@ -36,7 +36,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<? foreach($item as $n2 => $item2) { ?>
+								<?php foreach($item as $n2 => $item2) { ?>
 								<tr>
 									<td><?=($n2 + 1)?></td>
 									<td><?=$item2->centre->formatted()?></td>
@@ -45,7 +45,7 @@
 									<td><?=($item2->overlap > MAX_OVERLAP ? 'yes' : 'no')?></td>
 									<td><?=$item2->score?></td>
 								</tr>
-								<? } ?>
+								<?php } ?>
 								<tr>
 									<td>Average</td>
 									<td><?=$generationStats[$n]['meanCentre']->formatted()?></td>
@@ -66,7 +66,7 @@
 						</table>
 					</td>
 				</tr>
-				<? } ?>
+				<?php } ?>
 			</tbody>
 		</table>
 
@@ -76,7 +76,7 @@
 				<th>#</th><th>Antigen</th><th>Result</th><th>Generation #</th><th>Detector #</th>
 			</tr></thead>
 			<tbody>
-				<? foreach($tests as $n => $item) { ?>
+				<?php foreach($tests as $n => $item) { ?>
 				<tr>
 					<td><?=($n + 1)?></td>
 					<td><?=$item['antigen']?></td>
@@ -84,7 +84,7 @@
 					<td><?=$item['generation']?></td>
 					<td><?=$item['detector_n']?></td>
 				</tr>
-				<? } ?>
+				<?php } ?>
 			</tbody>
 		</table>
 		
@@ -103,9 +103,9 @@
 			<li>Red dot: antigen</li>
 			<li>Yellow dot: non-harmful antigen</li>
 		</ul>
-		<? for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
+		<?php for($i = 0; $i < DIMENSIONS - 1; $i++) { ?>
 			<p><br />x: <?=$space[$i]['desc']?>; y: <?=$space[$i + 1]['desc']?></p>
 			<img src="graph.php?<?=http_build_query(array('dimensions' => array($i, $i + 1)))?>" />
-		<? } ?>
+		<?php } ?>
 	</body>
 </html>

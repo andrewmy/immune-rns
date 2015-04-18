@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 
 set_time_limit(0);
 
 $startTime = microtime(true);
 
-require_once '../include/config.php';
+require_once './include/init.php';
 
 
 function stdev($array) {
@@ -34,7 +34,8 @@ $runtime = array();
 $memory = array();
 
 if(DB_RECORD) {
-	$db = new PDO("mysql:host=localhost;dbname=rtu_rns", 'root', '');
+    require_once './include/db_config.php';
+	$db = new PDO("mysql:host={$cfg['dbHost']};dbname={$cfg['dbName']}", $cfg['dbUser'], $cfg['dbPass']);
 	$db->query('SET NAMES utf8');
 
 	$db->query("INSERT INTO `runs`
@@ -218,4 +219,4 @@ if(DB_RECORD) {
 foreach($memory as $n => $m)
 	$memory[$n] = number_format($m / 1024, 3);
 
-require '../template/rns.phtml';
+require './template/rns.phtml';

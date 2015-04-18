@@ -1,4 +1,4 @@
-<?php require_once '../include/config.php'; ?>
+<?php require_once './include/init.php'; ?>
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
@@ -9,6 +9,6 @@
 	<body>
 		<h1>Real-value negative selection algorithm</h1>
 		
-		<? require '../template/settings.phtml'; ?>
+		<?php require './template/settings.phtml'; ?>
 	</body>
 </html>

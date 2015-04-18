@@ -6,9 +6,8 @@
 \~$
 
 ^nbproject[\\/]
+^\.idea[\\/]
 \.DS_Store$
-Thumbs.db$
-^psd[\\/]
-\.gz$
-\.zip$
-\.psd$
+
+^include[\\/]db_config.php$
+^reports[\\/]

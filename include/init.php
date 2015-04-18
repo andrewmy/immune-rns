@@ -50,9 +50,9 @@ define('NEXT_GEN_AFTER', $settings['next_gen_after']);
 define('TOP_TOCLONE',    $settings['top_toclone']);
 define('DETECTOR_SORT_FIELD', $settings['detector_sort_field']);
 
-require_once '../include/Point.class.php';
-require_once '../include/Vector.class.php';
-require_once '../include/Detector.class.php';
+require_once './include/Point.class.php';
+require_once './include/Vector.class.php';
+require_once './include/Detector.class.php';
 
 Detector::$max_dim = 10;
 

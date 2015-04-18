@@ -101,13 +101,13 @@
 			<caption>Problem space</caption>
 			<thead><tr><th>Dimension</th><th>Minimum</th><th>Maximum</th></tr></thead>
 			<tbody>
-				<? foreach($space as $n => $item) { ?>
+				<?php foreach($space as $n => $item) { ?>
 				<tr>
 					<td><?=($n + 1)?>. <?=$item['desc']?></td>
 					<td><input type="text" name="space[<?=$n?>][min]" value="<?=$item['min']?>" size="5" /></td>
 					<td><input type="text" name="space[<?=$n?>][max]" value="<?=$item['max']?>" size="5" /></td>
 				</tr>
-				<? } ?>
+				<?php } ?>
 			</tbody>
 		</table>
 		</div>
@@ -115,14 +115,14 @@
 		<div class="settings-part-container">
 		<h2>Self elements</h2>
 		<ol id="self">
-			<? foreach($self as $n => $item) { ?>
+			<?php foreach($self as $n => $item) { ?>
 			<li id="self-<?=$n?>">
-				<? foreach($item->coords as $n2 => $coord) { ?>
+				<?php foreach($item->coords as $n2 => $coord) { ?>
 				<input type="text" name="self[<?=$n?>][<?=$n2?>]" value="<?=$coord?>" size="5" />
-				<? } ?>
+				<?php } ?>
 				<input type="button" value="x" class="self-remove" rel="<?=$n?>" />
 			</li>
-			<? } ?>
+			<?php } ?>
 		</ol>
 		<p><input type="button" value="Add self element" id="self-add" /></p>
 		</div>
